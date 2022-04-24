@@ -4,47 +4,21 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Course {
+
     public final String name;
-    public int grade;
+    public double grade;
+    SQL sql = new SQL();
 
-    public Course(String name) throws SQLException {
-        this.name = setName(name);
-        this.grade  = setGrade(name);
+    public Course(String name, double grade) {
+        this.name = name;
+        this.grade = grade;
     }
 
-    public String setName(String name) throws SQLException {
-        String courseName = "";
-        SQL sql = new SQL();
-        ResultSet result =  sql.sendQuery("select name from course where name = " + "'" + name + "'" + ";");
-        while (result.next()) {
-            courseName = result.getString("name").trim();
-        }
-        return courseName;
+    public void insert() {
+        sql.sendUpdate("INSERT INTO courses " + "VALUES ('" + name + "', " + grade + ");");
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int setGrade(String name) throws SQLException {
-        int courseGrade = 0;
-        SQL sql = new SQL();
-        ResultSet result = sql.sendQuery("select grade from course where name = " + "'" + name + "'" + ";");
-        while (result.next()) {
-            courseGrade = result.getInt("grade");
-        }
-        return courseGrade;
-    }
-
-    public int getGrade() {
-        return grade;
-    }
-
-    public boolean isPass() {
-        return this.grade >= 50;
-    }
-
-    public String toString() {
-        return "name: " + getName() + ", grade: " + getGrade() + ", pass: " + isPass();
+    public void updateGrade(double grade) {
+        sql.sendUpdate("UPDATE courses SET grade = " + grade + "WHERE name = " + "'" + this.name + "';");
     }
 }
