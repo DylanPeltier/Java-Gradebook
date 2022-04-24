@@ -12,7 +12,7 @@ public class SQL {
         ResultSet resultSet = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/grade_test", "dylan", "DylanP2002");
+            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/gradebook", "dylan", "DylanP2002");
             Statement statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
 

@@ -1,11 +1,13 @@
 package gradebook;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Main {
 
-    public static ArrayList<Course> createCourseList() {
+    public static ArrayList<Course> createCourseList() throws SQLException {
         ArrayList<Course> courseList = new ArrayList<>();
         courseList.add(0, new Course("System Programming", null));
         courseList.add(1, new Course("Data Structures & Algorithms", null));
@@ -28,16 +30,21 @@ public class Main {
         return pos;
     }
 
-    public static void main(String[] args) {
-       ArrayList<Course> cList;
-       cList = createCourseList();
-       cList.get(findPosOfCourse("System Programming", cList)).addAssignment(new Assignment(cList.get(findPosOfCourse("System Programming", cList)).name, "Final Exam", 0.5, 0));
-//       cList.get(findPosOfCourse("Data Structures & Algorithms", cList)).addAssignment(new Assignment(cList.get(findPosOfCourse("Data Structures & Algorithms", cList)).name, "Final Exam", 0.5, 95.5));
-//       cList.get(findPosOfCourse("Introduction to Astronomy II", cList)).addAssignment(new Assignment(cList.get(findPosOfCourse("Introduction to Astronomy II", cList)).name, "Final Exam", 0.5, 95.5));
-//       cList.get(findPosOfCourse("Object Oriented Programming with Java", cList)).addAssignment(new Assignment(cList.get(findPosOfCourse("Object Oriented Programming with Java", cList)).name, "Final Exam", 0.5, 95.5));
-//       cList.get(findPosOfCourse("Mathematical Foundations", cList)).addAssignment(new Assignment(cList.get(findPosOfCourse("Mathematical Foundations", cList)).name, "Final Exam", 0.5, 95.5));
-//       cList.get(findPosOfCourse("Data Structures & Algorithms", cList)).updateGrade(50);
-        cList.get(findPosOfCourse("System Programming", cList)).getAssignmentByName("Final Exam").updateGrade(69.420);
+    public static ArrayList<Course> getList() throws SQLException {
+        SQL sql = new SQL();
+        ResultSet result;
+        ArrayList<Course> list = new ArrayList<>();
+        result = sql.sendQuery("SELECT * FROM courses");
+
+        while (result.next()) {
+            list.add(new Course(result.getString("name"), result.getDouble("grade")));
+        }
+        return list;
     }
 
+    public static void main(String[] args) throws SQLException {
+        ArrayList<Course> cList;
+        cList = getList();
+        cList.get(findPosOfCourse("System Programming", cList)).getAssignmentByName("Final Exam").updateGrade(32);
+    }
 }
