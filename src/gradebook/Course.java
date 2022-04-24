@@ -1,15 +1,15 @@
 package gradebook;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class Course {
 
     public final String name;
-    public double grade;
+    public Double grade;
     SQL sql = new SQL();
+    ArrayList<Assignment> aList = new ArrayList<>();
 
-    public Course(String name, double grade) {
+    public Course(String name, Double grade) {
         this.name = name;
         this.grade = grade;
     }
@@ -20,5 +20,23 @@ public class Course {
 
     public void updateGrade(double grade) {
         sql.sendUpdate("UPDATE courses SET grade = " + grade + "WHERE name = " + "'" + this.name + "';");
+    }
+
+    public void addAssignment(Assignment a) {
+        aList.add(a);
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Assignment getAssignmentByName(String name) {
+        Assignment assignment = null;
+        for (Assignment a : aList) {
+            if (a.getName().equals(name)) {
+                assignment = a;
+            }
+        }
+        return assignment;
     }
 }

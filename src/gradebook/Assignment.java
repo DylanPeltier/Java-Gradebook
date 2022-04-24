@@ -14,6 +14,7 @@ public class Assignment {
         this.name = name;
         this.weight = weight;
         this.grade = grade;
+        insert();
     }
 
     public void insert() {
@@ -22,6 +23,10 @@ public class Assignment {
 
     public void updateGrade(double grade) {
         sql.sendUpdate("UPDATE assignments SET grade = " + grade + "WHERE name = " + "'" + this.name + "';");
+    }
+
+    public String getName() {
+        return this.name;
     }
 
 }
