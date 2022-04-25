@@ -5,11 +5,11 @@ public class Assignment {
 
     private final String className;
     private final String name;
-    private final double weight;
-    public double grade;
+    private final Double weight;
+    public Double grade;
     SQL sql = new SQL();
 
-    public Assignment(String className, String name, double weight, double grade) {
+    public Assignment(String className, String name, Double weight, Double grade) {
         this.className = className;
         this.name = name;
         this.weight = weight;
@@ -27,6 +27,14 @@ public class Assignment {
 
     public String getName() {
         return this.name;
+    }
+
+    public double getGrade() {
+        return this.grade;
+    }
+
+    public void printInfo() {
+        System.out.println(this.name + ": grade = " + this.grade + ", weight = " + this.weight);
     }
 
 }

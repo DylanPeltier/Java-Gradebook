@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Scanner;
 
 public class Main {
 
@@ -42,9 +43,56 @@ public class Main {
         return list;
     }
 
+    public static void printList(ArrayList<Course> list) {
+        for (Course c : list) {
+            System.out.println(list.indexOf(c) + " | " + c.getName() + ": " + c.getGrade());
+        }
+    }
+
+    public static void printAssignmentList(ArrayList<Assignment> list) {
+        for (Assignment a : list) {
+            System.out.println(list.indexOf(a) + " | " + a.getName() + ": " + a.getGrade());
+        }
+    }
+
+    public static void addCourse() throws SQLException {
+        ArrayList<Course> list = getList();
+        System.out.print("\nEnter course name: ");
+        Scanner scanner = new Scanner(System.in);
+        String name = scanner.nextLine();
+        Course course = new Course(name, null);
+        list.add(course);
+        course.insert();
+        System.out.println("\nCourse added :)");
+    }
+
+    public static void addAssignment() throws SQLException {
+        ArrayList<Course> list = getList();
+        System.out.println();
+        printList(list);
+        System.out.print("\nChoose a course to add an assignment to: ");
+        Scanner scanner = new Scanner(System.in);
+        int courseOption = scanner.nextInt();
+        Course course = list.get(courseOption);
+        System.out.print("\nEnter name of assignment: ");
+        String assignmentName = scanner.next();
+        System.out.print("\nEnter weight of assignment: ");
+        double weight = scanner.nextDouble();
+        course.aList.add(new Assignment(course.name, assignmentName, weight, null));
+        System.out.println("\nAssignment added :)");
+    }
+
     public static void main(String[] args) throws SQLException {
-        ArrayList<Course> cList;
-        cList = getList();
-        cList.get(findPosOfCourse("System Programming", cList)).getAssignmentByName("Final Exam").updateGrade(32);
+        Scanner scnr = new Scanner(System.in);
+        System.out.println("Welcome to my gradebook!");
+        System.out.println();
+        System.out.println("Menu options:");
+        System.out.println("0: Add course\n1: Add assignment\n2: Show courses\n3: Show assignments\n");
+        System.out.print("Enter option number: ");
+        int decision = scnr.nextInt();
+        switch (decision) {
+            case 0 -> addCourse();
+            case 1 -> addAssignment();
+        }
     }
 }

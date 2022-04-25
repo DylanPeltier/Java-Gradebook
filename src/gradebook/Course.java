@@ -58,4 +58,8 @@ public class Course {
         }
         return list;
     }
+
+    public double getGrade() {
+        return this.grade;
+    }
 }
