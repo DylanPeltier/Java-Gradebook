@@ -50,14 +50,11 @@ public class Main {
 
 
     public static String fill(char ch, int len) {
-        StringBuilder sb = new StringBuilder(len);
-        sb.append(String.valueOf(ch).repeat(Math.max(0, len)));
-        return sb.toString();
+        return String.valueOf(ch).repeat(Math.max(0, len));
     }
 
     public static String padString(String str, int len) {
-        StringBuilder sb = new StringBuilder(str);
-        return sb.append(fill(' ', len - str.length())).toString();
+        return str + fill(' ', len - str.length());
     }
 
     public static void printList() throws SQLException {
@@ -200,15 +197,15 @@ public class Main {
                                 option1 = scnr.nextInt();
                                 switch (option1) {
                                     case 0 -> {
-                                        ArrayList<Course> list = getList();
+                                        getList();
                                         addCourse();
                                     }
                                     case 1 -> {
-                                        ArrayList<Course> list = getList();
+                                        getList();
                                         removeCourse();
                                     }
                                     case 2 -> {
-                                        ArrayList<Course> list = getList();
+                                        getList();
                                         printList();
                                     }
                                 }
