@@ -1,6 +1,7 @@
 menu options:
-    add course
-    add assignment
     show courses
     show assignments
     change assignment grade
+
+main:
+    add loop for invalid entries
