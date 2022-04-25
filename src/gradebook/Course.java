@@ -21,6 +21,10 @@ public class Course {
         sql.sendUpdate("INSERT INTO courses " + "VALUES ('" + name + "', " + grade + ");");
     }
 
+    public void delete() {
+        sql.sendUpdate("DELETE FROM courses WHERE name = " + "'" + this.name + "';");
+    }
+
     public void updateGrade(double grade) {
         sql.sendUpdate("UPDATE courses SET grade = " + grade + "WHERE name = " + "'" + this.name + "';");
     }
@@ -62,4 +66,5 @@ public class Course {
     public double getGrade() {
         return this.grade;
     }
+
 }
