@@ -23,7 +23,6 @@ public class SQL {
     }
 
     public void sendUpdate(String query) {
-        ResultSet resultSet = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/gradebook", "dylan", "DylanP2002");

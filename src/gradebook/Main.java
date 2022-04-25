@@ -8,19 +8,6 @@ import static java.lang.System.exit;
 
 public class Main {
 
-    public static ArrayList<Course> createCourseList() throws SQLException {
-        ArrayList<Course> courseList = new ArrayList<>();
-        courseList.add(0, new Course("System Programming", null));
-        courseList.add(1, new Course("Data Structures & Algorithms", null));
-        courseList.add(2, new Course("Introduction to Astronomy II", null));
-        courseList.add(3, new Course("Object Oriented Programming with Java", null));
-        courseList.add(4, new Course("Mathematical Foundations", null));
-        for (Course course : courseList) {
-            course.insert();
-        }
-        return courseList;
-    }
-
     public static int findPosOfCourse(String name, ArrayList<Course> list) {
         int pos = 0;
         for (Course c : list) {
@@ -52,54 +39,45 @@ public class Main {
         return longest.length();
     }
 
-    public static int getLength(String str) throws SQLException {
-        ArrayList<String> list = new ArrayList<>();
-        int len = 0;
-        for (Course course : getList()) {
-            if (course.name.equals(str)) {
-                len = course.name.length();
-            }
+    public static ArrayList<String> getListOfCourseName() throws SQLException {
+        ArrayList<String> nameList = new ArrayList<>();
+        ArrayList<Course> list = getList();
+        for (Course c : list) {
+            nameList.add(c.name);
         }
-        return len;
+        return nameList;
     }
 
-    public static void printSpaces(String str) throws SQLException {
-        String s = " ".repeat(Math.max(0, ((getLengthOfLongestName() - getLength(str)))));
-        System.out.print(s);
+
+    public static String fill(char ch, int len) {
+        StringBuilder sb = new StringBuilder(len);
+        sb.append(String.valueOf(ch).repeat(Math.max(0, len)));
+        return sb.toString();
     }
 
-    public static void printHyphens() throws SQLException {
-        String s = "-".repeat(Math.max(0, ((getLengthOfLongestName() + 7))));
-        System.out.print(s);
+    public static String padString(String str, int len) {
+        StringBuilder sb = new StringBuilder(str);
+        return sb.append(fill(' ', len - str.length())).toString();
     }
 
     public static void printList() throws SQLException {
-        ArrayList<Course> cList = getList();
-        if (cList.isEmpty()) {
-            System.out.println("No courses!");
+        ArrayList<Course> list = getList();
+        System.out.println();
+        if (list.isEmpty()) {
+            System.out.println("There are no courses!");
         } else {
             System.out.println();
-            System.out.print("+");
-            printHyphens();
-            System.out.print("+");
-            System.out.println();
-            for (Course c : cList) {
-                System.out.print("| " + c.getName() + ": " + c.getGrade());
-                printSpaces(c.getName());
-                System.out.println(" |");
+            int maxBoxWidth = getLengthOfLongestName();
+            ArrayList<Course> courses = getList();
+            String line = "+" + fill('-', maxBoxWidth + 7) + "+";
+            System.out.println(line);
+            for (Course course : courses) {
+                System.out.printf("| %s: %s |%n", padString(course.name, maxBoxWidth), course.grade.toString());
             }
-            System.out.print("+");
-            printHyphens();
-            System.out.print("+");
-            System.out.println();
+            System.out.println(line);
         }
     }
 
-    public static void printAssignmentList(ArrayList<Assignment> list) {
-        for (Assignment a : list) {
-            System.out.println(list.indexOf(a) + " | " + a.getName() + ": " + a.getGrade());
-        }
-    }
 
     public static void addCourse() throws SQLException {
         ArrayList<Course> list = getList();
@@ -127,19 +105,42 @@ public class Main {
     }
 
     public static void addAssignment() throws SQLException {
-        ArrayList<Course> list = getList();
-        System.out.println();
-        printList();
-        System.out.print("\nChoose a course to add an assignment to: ");
         Scanner scanner = new Scanner(System.in);
-        int courseOption = scanner.nextInt();
-        Course course = list.get(courseOption);
-        System.out.print("\nEnter name of assignment: ");
-        String assignmentName = scanner.next();
-        System.out.print("\nEnter weight of assignment: ");
-        double weight = scanner.nextDouble();
-        course.aList.add(new Assignment(course.name, assignmentName, weight, null));
-        System.out.println("\nAssignment added :)\n");
+        String cName = "";
+        ArrayList<String> cNameList = getListOfCourseName();
+        while(!cNameList.contains(cName)) {
+            System.out.print("Enter name of course: ");
+            cName = scanner.nextLine();
+            try {
+                ArrayList<Course> list = getList();
+                int pos = getCoursePosByName(cName);
+                Course course = list.get(pos);
+                System.out.print("Enter assignment name: ");
+                String aName = scanner.nextLine();
+                System.out.print("Enter weight: ");
+                double weight = scanner.nextDouble();
+                course.addAssignment(new Assignment(cName, aName, weight, null));
+                Assignment a =  course.aList.get(getPosOfAssignmentByName(aName, cName));
+                a.insert();
+                System.out.println("Assignment added :)");
+            } catch (InputMismatchException e) {
+                System.out.println("Course does not exist, try again");
+                scanner.next();
+            }
+        }
+
+    }
+
+    public static int getPosOfAssignmentByName(String aName, String cName) throws SQLException {
+        ArrayList<Course> list = getList();
+        int pos = 0;
+        Course c = list.get(getCoursePosByName(cName));
+        for (Assignment a : c.aList) {
+            if (a.getName().equals(aName)) {
+                pos = c.aList.indexOf(a);
+            }
+        }
+        return pos;
     }
 
     public static void printMenu() {
@@ -151,13 +152,33 @@ public class Main {
         System.out.print("Choose your option: ");
     }
 
-    private static void printCourseMenu() {
+    public static void printCourseMenu() {
         System.out.println();
         String[] options = {"0 - Add course", "1 - Remove course", "2 - Show courses", "3 - Exit"};
         for (String option : options) {
             System.out.println(option);
         }
         System.out.print("Choose your option: ");
+    }
+
+    public static void printAssignmentMenu() {
+        System.out.println();
+        String[] options = {"0 - Add assignment", "1 - Remove assignment", "2 - Show assignments", "3 - Exit"};
+        for (String option : options) {
+            System.out.println(option);
+        }
+        System.out.print("Choose your option: ");
+    }
+
+    public static int getCoursePosByName(String name) throws SQLException {
+        ArrayList<Course> list = getList();
+        int c = 0;
+        for (Course course : list) {
+            if (course.name.equals(name)) {
+                c = list.indexOf(course);
+            }
+        }
+        return c;
     }
 
 
@@ -172,7 +193,7 @@ public class Main {
                 option = scnr.nextInt();
                 switch (option) {
                     case 0 -> {
-                        int option1 = -1;
+                        int option1 = 0;
                         while (option1 != 3) {
                             printCourseMenu();
                             try {
@@ -200,7 +221,21 @@ public class Main {
                             }
                         }
                     }
-                    case 1 -> addAssignment();
+                    case 1 -> {
+                        int option2 = 0;
+                        while (option2 != 3) {
+                            printAssignmentMenu();
+                            try {
+                                option2 = scnr.nextInt();
+                                if (option2 == 0) {
+                                    addAssignment();
+                                }
+                            } catch (InputMismatchException e) {
+                                System.out.println("Invalid entry, try again");
+                                scnr.next();
+                            }
+                        }
+                    }
                     case 2 -> {
                         System.out.println("\nAurevoir :)");
                         exit(0);
@@ -208,9 +243,6 @@ public class Main {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Invalid entry, try again :(");
-                scnr.next();
-            } catch (Exception e) {
-                System.out.println("Unexpected error, please try again :(");
                 scnr.next();
             }
         }

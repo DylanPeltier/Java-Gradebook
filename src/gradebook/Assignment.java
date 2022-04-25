@@ -14,7 +14,6 @@ public class Assignment {
         this.name = name;
         this.weight = weight;
         this.grade = grade;
-        insert();
     }
 
     public void insert() {
@@ -35,6 +34,10 @@ public class Assignment {
 
     public void printInfo() {
         System.out.println(this.name + ": grade = " + this.grade + ", weight = " + this.weight);
+    }
+
+    public String getClassName() {
+        return this.className;
     }
 
 }
