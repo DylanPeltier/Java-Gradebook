@@ -4,7 +4,7 @@ package gradebook;
 public class Assignment {
 
     private final String className;
-    private final String name;
+    public final String name;
     private final Double weight;
     public Double grade;
     SQL sql = new SQL();
@@ -18,6 +18,10 @@ public class Assignment {
 
     public void insert() {
         sql.sendUpdate("INSERT INTO assignments VALUES ('" + className + "', '" + name + "', " + weight + ", " + grade + ");");
+    }
+
+    public void delete() {
+        sql.sendUpdate("DELETE FROM assignments WHERE name = " + "'" + this.name + "';");
     }
 
     public void updateGrade(double grade) {
